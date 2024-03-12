@@ -13,9 +13,8 @@ from services.auth_service.auth_model import VerificationRequest
 import requests
 import json
 
-# email = 'bekhzodtokhirjonov@gmail.com'
-# pwd = 'avrjEWCAIdLe6tXmaiiXOA2gNsWNUzAY74zeqHro'
 sms_settings = SmsSettings()
+
 
 def c_log_in(request: OAuth2PasswordRequestForm, db: Session):
     client = db.query(Client).filter(Client.phone == request.username).first()
