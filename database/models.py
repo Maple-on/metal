@@ -39,11 +39,12 @@ class Metal(Base):
     __tablename__ = 'metals'
 
     id = Column(Integer, Sequence('unique_id'), primary_key=True, server_default=text("nextval('unique_id')"))
-    type = Column(String, nullable=False)
-    name = Column(String, nullable=False)
+    category = Column(String, nullable=False)
+    subcategory = Column(String, nullable=False)
     price = Column(DECIMAL, nullable=False)
     available = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=datetime.now)
+    updated_at = Column(DateTime(timezone=True), default=datetime.now)
 
     order = relationship("Order", back_populates="metal")
 

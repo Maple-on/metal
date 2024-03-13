@@ -57,7 +57,6 @@ def get_sms_token():
 
     response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
-    print(response.text)
     parsed_data = json.loads(response.text)
     token = parsed_data['data']['token']
     return token
@@ -70,9 +69,6 @@ def refresh_sms_token():
     headers = {}
 
     response = requests.request("PATCH", url, headers=headers, data=payload)
-
-    print(response.text)
-
     return response
 
 
@@ -92,18 +88,15 @@ def send_sms(phone_number: str, message: str):
         'Authorization': f'Bearer {token}'
     }
 
-    files = [
-
-    ]
+    files = []
 
     payload = {
         'mobile_phone': phone_number,
         'message': message,
         'from': '4546'
     }
-    response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
-    print(response.text)
+    response = requests.request("POST", url, headers=headers, data=payload, files=files)
     return response
 
 

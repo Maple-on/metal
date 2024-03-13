@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
-from services.order_service.order_model import CreateBaseOrder
-from services.order_service.order import create, get_list, get_by_id, delete
+from services.order_service.order_model import CreateBaseOrder, UpdateOrder
+from services.order_service.order import create, get_list, get_by_id, update, delete
 from database import database
 
 router = APIRouter(
@@ -28,9 +28,9 @@ def Create_order(request: CreateBaseOrder, session: Session = Depends(get_db)):
     return create(request, session)
 
 
-# @router.put('/{id}', status_code=status.HTTP_202_ACCEPTED)
-# def Update(id: UUID, request: UpdateProductModel = Depends(), session: Session = Depends(get_db)):
-#     return update(id, request, session)
+@router.put('/{id}', status_code=status.HTTP_202_ACCEPTED)
+def Update(id: int, request: UpdateOrder = Depends(), session: Session = Depends(get_db)):
+    return update(id, request, session)
 
 
 # @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)

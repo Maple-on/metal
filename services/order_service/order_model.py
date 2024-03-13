@@ -8,6 +8,7 @@ from decimal import Decimal
 class Status(str, Enum):
     new = "New"
     processed = "Processed"
+    declined = "Declined"
 
 
 class Unit(str, Enum):
@@ -18,11 +19,8 @@ class OrderModel(BaseModel):
     id: int
     client_name: str
     client_phone: str
-    metal_type: str
-    metal_name: str
-    metal_price: Decimal
-    amount: Decimal
-    unit: Unit
+    order: Any
+    total_sum: Decimal
     status: Status
     created_at: datetime
     updated_at: datetime
@@ -37,11 +35,10 @@ class CreateOrder(BaseModel):
 
 class CreateBaseOrder(BaseModel):
     client_id: int
-    metal_id: int
+    metal_category: str
+    metal_subcategory: str
     amount: Decimal
 
 
 class UpdateOrder(BaseModel):
-    amount: Decimal
-    unit: Unit
     status: Status
