@@ -14,4 +14,3 @@ class TokenData(BaseModel):
 class VerificationRequest(BaseModel):
     sms_id: str
     code: str
-    phone: str

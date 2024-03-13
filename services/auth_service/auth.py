@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from services.auth_service.auth_model import Token
 from database.models import User, Verification, Client
 from database.hashing import Hash
-from services.auth_service.token import create_access_token
+from services.auth_service.token import create_access_token, create_access_token_for_guest
 from services.auth_service.auth_model import VerificationRequest
 import requests
 import json
@@ -78,7 +78,7 @@ def send_sms_code(phone_number: str, db: Session):
     parsed_data = json.loads(response.text)
     sms_id = parsed_data['id']
     create_verification(sms_id, code, db)
-    return sms_id
+    return {"sms_id": sms_id}
 
 
 def send_sms(phone_number: str, message: str):
@@ -107,7 +107,7 @@ def verify_sms_code(request: VerificationRequest, db: Session):
                             detail=f"Invalid SMS ID")
 
     if verification.code == request.code:
-        access_token = create_access_token(data={"sub": request.phone})
+        access_token = create_access_token_for_guest(data={"sub": "guest"})
         token = Token(
             access_token=access_token,
             token_type="bearer"

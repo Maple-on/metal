@@ -21,7 +21,7 @@ def Create(request: CreateClientModel, session: Session = Depends(get_db), curre
 
 
 @router.get('/', status_code=status.HTTP_200_OK)
-def Get_list(session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_client)):
+def Get_list(session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     return get_list(session)
 
 
@@ -31,5 +31,5 @@ def Get_by_id(id: int, session: Session = Depends(get_db), current_user: UserMod
 
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def Delete(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_client)):
+def Delete(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
     return delete(id, session)
