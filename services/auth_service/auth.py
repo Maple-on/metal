@@ -3,15 +3,17 @@ import random
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from config import SmsSettings
+import requests
+import json
 
 from fastapi.security import OAuth2PasswordRequestForm
-from services.auth_service.auth_model import Token, Method
+from services.auth_service.auth_model import Token
 from database.models import User, Verification, Client
 from database.hashing import Hash
 from services.auth_service.token import create_access_token, create_access_token_for_guest, create_access_token_for_client
-from services.auth_service.auth_model import VerificationRequest
-import requests
-import json
+from services.auth_service.auth_model import VerificationRequestForLogin, VerificationRequestForSignUp
+from services.client_service.client import create
+from services.client_service.client_model import CreateClientModel
 
 sms_settings = SmsSettings()
 
@@ -100,7 +102,7 @@ def send_sms(phone_number: str, message: str):
     return response
 
 
-def verify_sms_code(request: VerificationRequest, db: Session):
+def verify_sms_code_login(request: VerificationRequestForLogin, db: Session):
     verification = db.query(Verification).filter(Verification.id == request.sms_id).first()
     if not verification:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -108,14 +110,7 @@ def verify_sms_code(request: VerificationRequest, db: Session):
 
     if verification.code == request.code:
         client = db.query(Client).filter(Client.phone == request.phone_number).first()
-        if not client and request.method == Method.sign_up:
-            access_token = create_access_token_for_guest(data={"sub": "guest"})
-            token = Token(
-                access_token=access_token,
-                token_type="bearer"
-            )
-            return token
-        elif not client and request.method == Method.login:
+        if not client:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                                 detail=f"Invalid phone number")
         else:
@@ -124,7 +119,33 @@ def verify_sms_code(request: VerificationRequest, db: Session):
                 access_token=access_token,
                 token_type="bearer"
             )
-            return token
+            return {
+                "client": client,
+                "token": token
+            }
+    return False
+
+
+def verify_sms_code_signup(request: VerificationRequestForSignUp, db: Session):
+    verification = db.query(Verification).filter(Verification.id == request.sms_id).first()
+    if not verification:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Invalid SMS ID")
+
+    if verification.code == request.code:
+        client = db.query(Client).filter(Client.phone == request.phone_number).first()
+        if not client:
+            client = CreateClientModel(username=request.name, phone=request.phone_number)
+            client = create(client, db)
+        access_token = create_access_token_for_client(data={"sub": request.phone_number})
+        token = Token(
+            access_token=access_token,
+            token_type="bearer"
+        )
+        return {
+            "client": client,
+            "token": token
+        }
     return False
 
 
