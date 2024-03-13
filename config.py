@@ -23,6 +23,7 @@ class BucketSettings(BaseSettings):
 
 class TokenSettings(BaseSettings):
     secret_key: str
+    secret_key_2: str
     algorithm: str
     access_token_expire_minutes: int
     guest_access_token_expire_minutes: int
@@ -34,6 +35,13 @@ class TokenSettings(BaseSettings):
 class SmsSettings(BaseSettings):
     SMS_EMAIL: str
     SMS_PWD: str
+
+    class Config:
+        env_file = ".env"
+
+
+class BannerSettings(BaseSettings):
+    BASE_URL: str
 
     class Config:
         env_file = ".env"

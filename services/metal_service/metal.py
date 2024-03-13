@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 from services.metal_service.metal_model import CreateMetalModel, UpdateMetalModel, MetalModel
 from database.models import Metal
 from datetime import datetime
-from sqlalchemy import desc
+from sqlalchemy import desc, asc
 
 
 def create(request: CreateMetalModel, db: Session):
@@ -20,9 +20,9 @@ def create(request: CreateMetalModel, db: Session):
 
 
 def get_list(db: Session):
-    metals = db.query(Metal).order_by(desc(Metal.category)).all()
+    metals = db.query(Metal).order_by(asc(Metal.category)).order_by(asc(Metal.id)).all()
 
-
+    total_count = len(metals)
     metal_list = []
 
     for metal in metals:
@@ -38,7 +38,10 @@ def get_list(db: Session):
         metal_list.append(each_metal)
 
     db.close()
-    return {"metals": metal_list}
+    return {
+        "metals": metal_list,
+        "total_count": total_count
+    }
 
 
 def get_by_id(id: int, db: Session):

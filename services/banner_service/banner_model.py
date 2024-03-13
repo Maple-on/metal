@@ -1,5 +1,5 @@
+from datetime import datetime
 from pydantic import BaseModel
-from fastapi import UploadFile
 
 
 class CreateBannerModel(BaseModel):
@@ -7,5 +7,7 @@ class CreateBannerModel(BaseModel):
 
 
 class BannerModel(BaseModel):
-    name: str
+    id: int
     image_url: str
+    desc: str
+    created_at: datetime

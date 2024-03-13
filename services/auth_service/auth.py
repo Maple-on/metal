@@ -5,10 +5,10 @@ from fastapi import HTTPException, status
 from config import SmsSettings
 
 from fastapi.security import OAuth2PasswordRequestForm
-from services.auth_service.auth_model import Token
+from services.auth_service.auth_model import Token, Method
 from database.models import User, Verification, Client
 from database.hashing import Hash
-from services.auth_service.token import create_access_token, create_access_token_for_guest
+from services.auth_service.token import create_access_token, create_access_token_for_guest, create_access_token_for_client
 from services.auth_service.auth_model import VerificationRequest
 import requests
 import json
@@ -107,12 +107,24 @@ def verify_sms_code(request: VerificationRequest, db: Session):
                             detail=f"Invalid SMS ID")
 
     if verification.code == request.code:
-        access_token = create_access_token_for_guest(data={"sub": "guest"})
-        token = Token(
-            access_token=access_token,
-            token_type="bearer"
-        )
-        return token
+        client = db.query(Client).filter(Client.phone == request.phone_number).first()
+        if not client and request.method == Method.sign_up:
+            access_token = create_access_token_for_guest(data={"sub": "guest"})
+            token = Token(
+                access_token=access_token,
+                token_type="bearer"
+            )
+            return token
+        elif not client and request.method == Method.login:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Invalid phone number")
+        else:
+            access_token = create_access_token_for_client(data={"sub": request.phone_number})
+            token = Token(
+                access_token=access_token,
+                token_type="bearer"
+            )
+            return token
     return False
 
 

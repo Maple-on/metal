@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from services.order_service.order_model import CreateBaseOrder, UpdateOrder
 from services.order_service.order import create, get_list, get_by_id, update, delete
 from database import database
-from database.oauth2 import get_current_user
+from database.oauth2 import get_current_user, get_current_client
 from services.user_service.user_model import UserModel
 
 router = APIRouter(
@@ -26,7 +26,7 @@ def Get_by_id(id: int, session: Session = Depends(get_db), current_user: UserMod
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def Create_order(request: CreateBaseOrder, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Create_order(request: CreateBaseOrder, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_client)):
     return create(request, session)
 
 

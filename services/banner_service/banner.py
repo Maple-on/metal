@@ -1,12 +1,12 @@
-from pathlib import Path
-
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+
+from config import BannerSettings
 from services.banner_service.banner_model import CreateBannerModel, BannerModel
 from database.models import Banner
-from datetime import datetime
 from fastapi import HTTPException, status, UploadFile, File
-import uuid
+
+banner_settings = BannerSettings()
 
 
 def create(request: CreateBannerModel, filename: str, db: Session):
@@ -23,9 +23,20 @@ def create(request: CreateBannerModel, filename: str, db: Session):
 
 
 def get_list(db: Session):
-    banner = db.query(Banner).all()
+    banners = db.query(Banner).all()
+    banner_list = []
 
-    return banner
+    for banner in banners:
+        each_banner = BannerModel(
+            id=banner.id,
+            image_url=banner_settings.BASE_URL+str(banner.id),
+            desc=banner.desc,
+            created_at=banner.created_at
+        )
+        banner_list.append(each_banner)
+
+    db.close()
+    return {"banners": banner_list}
 
 
 def get_by_id(id: int, db: Session):

@@ -37,7 +37,9 @@ def create(request: CreateBaseOrder, db: Session):
 
 def get_list(offset: int, limit: int, db: Session):
     orders = db.query(Order, Client.username, Client.phone, Metal.category, Metal.subcategory).join(Client, Order.client_id == Client.id).join(Metal, Order.metal_id == Metal.id)
-    orders = orders.offset(offset).limit(limit).all()
+
+    orders = orders.order_by(desc(Order.id)).offset(offset).limit(limit).all()
+    total_count = len(orders)
 
     order_list = []
 
@@ -61,7 +63,10 @@ def get_list(offset: int, limit: int, db: Session):
         order_list.append(each_order)
 
     db.close()
-    return order_list
+    return {
+        "orders": order_list,
+        "total_count": total_count
+    }
 
 
 def get_by_id(id: int, db: Session):
