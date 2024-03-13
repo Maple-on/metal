@@ -25,7 +25,7 @@ def Get_by_id(id: int, session: Session = Depends(get_db), current_user: UserMod
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def Create(request: CreateUserModel, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Create(request: CreateUserModel, session: Session = Depends(get_db)):
     return create(request, session)
 
 
