@@ -8,7 +8,8 @@ Base.metadata.create_all(engine)
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://akhzamov.github.io/metally-prod"
 ]
 
 app.add_middleware(
