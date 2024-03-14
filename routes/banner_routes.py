@@ -24,7 +24,7 @@ IMAGE_DIR = Path() / "images"
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-async def create_banner(request: CreateBannerModel = Depends(), picture: UploadFile = File(...), session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+async def create_banner(request: CreateBannerModel = Depends(), picture: UploadFile = File(...), session: Session = Depends(get_db)):
     filename = f"{uuid.uuid4()}.jpg"
     banner_id = create(request, filename, session)
     data = await picture.read()
@@ -35,18 +35,18 @@ async def create_banner(request: CreateBannerModel = Depends(), picture: UploadF
 
 
 @router.get("/{id}")
-def get_banner(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def get_banner(id: int, session: Session = Depends(get_db)):
     path = get_by_id(id, session)
     return FileResponse(path)
 
 
 @router.get("/")
-def get_banner_list(session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def get_banner_list(session: Session = Depends(get_db)):
     return get_list(session)
 
 
 @router.delete("/")
-def delete_banner(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def delete_banner(id: int, session: Session = Depends(get_db)):
     path = get_by_id(id, session)
     delete(id, session)
     os.unlink(path)
