@@ -16,25 +16,25 @@ get_db = database.get_db
 
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def Create(request: CreateMetalModel, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Create(request: CreateMetalModel, session: Session = Depends(get_db)):
     return create(request, session)
 
 
 @router.get('/', status_code=status.HTTP_200_OK)
-def Get_list(session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Get_list(session: Session = Depends(get_db)):
     return get_list(session)
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK)
-def Get_by_id(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Get_by_id(id: int, session: Session = Depends(get_db)):
     return get_by_id(id, session)
 
 
 @router.put('/{id}', status_code=status.HTTP_202_ACCEPTED)
-def Update(id: int, request: UpdateMetalShortModel, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Update(id: int, request: UpdateMetalShortModel, session: Session = Depends(get_db)):
     return update(id, request, session)
 
 
 @router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
-def Delete(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Delete(id: int, session: Session = Depends(get_db)):
     return delete(id, session)
