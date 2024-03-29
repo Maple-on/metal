@@ -21,12 +21,12 @@ def Create(request: CreateMetalModel, session: Session = Depends(get_db), curren
 
 
 @router.get('/', status_code=status.HTTP_200_OK)
-def Get_list(session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Get_list(session: Session = Depends(get_db)):
     return get_list(session)
 
 
 @router.get('/{id}', status_code=status.HTTP_200_OK)
-def Get_by_id(id: int, session: Session = Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+def Get_by_id(id: int, session: Session = Depends(get_db)):
     return get_by_id(id, session)
 
 
