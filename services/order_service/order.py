@@ -18,7 +18,8 @@ def create(request: CreateBaseOrder, db: Session):
         client_id=request.client_id,
         metal_id=metal['id'],
         amount=request.amount,
-        metal_price=metal['price']
+        metal_price=metal['price'],
+        comment=request.comment
     )
     db.add(new_order)
     db.commit()
@@ -51,6 +52,7 @@ def get_list(offset: int, limit: int, db: Session):
             order={
                 "metal_category": category,
                 "metal_subcategory": subcategory,
+                "comment": order.comment,
                 "metal_price": order.metal_price,
                 "amount": order.amount,
                 "unit": order.unit
@@ -82,6 +84,7 @@ def get_by_id(id: int, db: Session):
         order={
             "metal_category": category,
             "metal_subcategory": subcategory,
+            "comment": order.comment,
             "metal_price": order.metal_price,
             "amount": order.amount,
             "unit": order.unit

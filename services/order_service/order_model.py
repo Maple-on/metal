@@ -37,6 +37,7 @@ class CreateBaseOrder(BaseModel):
     client_id: int
     metal_category: str
     metal_subcategory: str
+    comment: str
     amount: Decimal
 
 

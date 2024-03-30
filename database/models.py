@@ -59,6 +59,7 @@ class Order(Base):
     amount = Column(DECIMAL, nullable=False)
     unit = Column(String, default='m')
     status = Column(String, nullable=False, default='New')
+    comment = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.now)
     updated_at = Column(DateTime(timezone=True), default=datetime.now)
 
